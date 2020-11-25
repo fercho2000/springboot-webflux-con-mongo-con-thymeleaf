@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import reactor.core.publisher.Flux;
 
 @SpringBootApplication
@@ -15,6 +16,10 @@ public class SpringWebfluxApplication implements CommandLineRunner {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    //Componente ReactiveMongoTemplate, permite borrar colecciones
+    @Autowired
+    private ReactiveMongoTemplate reactiveMongoTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringWebfluxApplication.class);
 
@@ -24,8 +29,12 @@ public class SpringWebfluxApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // inserts de ejemplo, que serviran como un tipo migración o sql builder
 
+        // Eliminar todos los registros de la coleccion productos , cuando se arranque la app
+        reactiveMongoTemplate.dropCollection("productos").subscribe();
+
+
+        // inserts de ejemplo, que serviran como un tipo migración o sql builder
         Flux.just(
                 new Producto("TV samsung pantalla pequeña", 1200.00),
                 new Producto("TV samsung pantalla mediana", 17200.00),
