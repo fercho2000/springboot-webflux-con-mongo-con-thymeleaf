@@ -56,4 +56,39 @@ public class ProductoController {
         return "listar";
     }
 
+    /*
+     * Chunked: Es el como definimos un limite de
+     * el chunk o bytes
+     * */
+
+
+    @GetMapping("listar-full")
+    private String listarFull(Model model) {
+        Flux<Producto> productos = productoRepository.findAll().map(
+                producto -> {
+                    producto.setNombre(producto.getNombre().toUpperCase());
+                    return producto;
+                }).repeat(5000);
+
+
+        model.addAttribute("productos", productos);
+        model.addAttribute("titulo", "Lista de productos");
+        return "listar";
+    }
+
+
+    @GetMapping("listar-chunked")
+    private String listarChunked(Model model) {
+        Flux<Producto> productos = productoRepository.findAll().map(
+                producto -> {
+                    producto.setNombre(producto.getNombre().toUpperCase());
+                    return producto;
+                }).repeat(5000);
+
+
+        model.addAttribute("productos", productos);
+        model.addAttribute("titulo", "Lista de productos");
+        return "listar";
+    }
+
 }
